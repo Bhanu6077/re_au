@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report Generator</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>Enetr Project Details</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+    <h3 >Project Details</h3>
+
+    <input type="text" name="project_name" placeholder="Project Name">
+    <input type="text" name="upc_code" placeholder="UPC Code">
+    <input type="text" name="state" placeholder="State">
+    <input type="text" name="ro" placeholder="RO">
+    <input type="text" name="piu" placeholder="PIU">
+    <input type="text" name="length" placeholder="Length">
+
+
+    <label>Flexible or Rigid:</label>
+    <div class="radio-group">
+        <label><input type="radio" name="flexibleorrigid" value="Flexible" required> Flexible</label>
+        <label><input type="radio" name="flexibleorrigid" value="Rigid"> Rigid</label>
+        <label><input type="radio" name="flexibleorrigid" value="Flexible/Rigid"> Both</label>
+    </div>
+
+    <label>Lanes:</label>
+    <div class="radio-group">
+        <label><input type="radio" name="lanes" value="Two" required> Four</label>
+        <label><input type="radio" name="lanes" value="Four"> Six</label>
+        <label><input type="radio" name="lanes" value="Two/Four"> Four/Six</label>
+    </div>
+
+    <label>O&M / DLP:</label>
+    <div class="radio-group">
+        <label><input type="radio" name="om_dlp" value="O&M" required> O&M</label>
+        <label><input type="radio" name="om_dlp" value="DLP"> DLP</label>
+        <label><input type="radio" name="om_dlp" value="O&M/DLP"> Both</label>
+    </div>
+
+    <label>Starting Survey Date:</label>
+    <input type="date" name="starting_survey_date" required>
+
+    <label>Zone:</label>
+    <select name="zone" required>
+        <option value="">-- Select Zone --</option>
+        <option value="Zone A">Zone A</option>
+        <option value="Zone B">Zone B</option>
+        <option value="Zone C">Zone C</option>
+        <option value="Zone D">Zone D</option>
+        <option value="Zone E">Zone E</option>
+    </select>
+
+
+    <h3>Road Table</h3>
+
+<!-- CHECKBOXES -->
+<div>
+    <label><input type="checkbox" value="Service Roads" onchange="toggleRoad(this)"> Service Roads</label>
+    <label><input type="checkbox" value="Intersection Roads" onchange="toggleRoad(this)"> Intersection Roads</label>
+    <label><input type="checkbox" value="Loop Roads" onchange="toggleRoad(this)"> Loop Roads</label>
+    <label><input type="checkbox" value="Bypass Roads" onchange="toggleRoad(this)"> Bypass Roads</label>
+</div>
+
+<!-- DYNAMIC INPUT AREA -->
+<div id="roadInputs"></div>
+
+    <h3>Upload Files</h3>
+
+    <label>Map Image:</label>
+    <input type="file" name="map_image">
+
+     
+
+    <label>Chainage Wise Analysed Document:</label>
+    <input type="file" name="analysed_doc">
+
+    <h3>Annexures</h3>
+
+    <label>Annexure A:</label>
+    <input type="file" name="anx_a_doc">
+
+    <label>Annexure B:</label>
+    <input type="file" name="anx_b_doc">
+
+    <label>Annexure C:</label>
+    <input type="file" name="anx_c_doc">
+    <button type="submit">Generate Report</button>
+
+</form>
+
+</div>
+
+</body>
+<script>
+function toggleRoad(checkbox) {
+    const container = document.getElementById("roadInputs");
+    const roadName = checkbox.value;
+    const id = roadName.replace(/\s/g, "_");
+
+    if (checkbox.checked) {
+
+        const div = document.createElement("div");
+        div.className = "road-row";
+        div.id = id;
+
+        div.innerHTML = `
+            <span class="road-label">${roadName}</span>
+
+            <div class="road-inputs">
+                <label>LHS</label>
+                <input type="number" name="${roadName}_LHS" value="0">
+
+                <label>RHS</label>
+                <input type="number" name="${roadName}_RHS" value="0">
+            </div>
+
+            <input type="hidden" name="road_type" value="${roadName}">
+        `;
+
+        container.appendChild(div);
+    } else {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+    }
+}
+</script>
+</html>
