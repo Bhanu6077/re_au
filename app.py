@@ -838,7 +838,10 @@ def form():
 
         safe_name = "".join(c for c in project_name if c.isalnum() or c in (" ", "_")).strip()
 
-        final_path = f"Final_Report_{safe_name}.docx"
+        # Create output folder if it doesn't exist
+        os.makedirs("output", exist_ok=True)
+
+        final_path = f"output/Final_Report_{safe_name}.docx"
 
         doc.save(final_path)
 
@@ -848,16 +851,25 @@ def form():
         @after_this_request
         def cleanup(response):
             try:
+                # Delete temporary rendered document
                 if os.path.exists(temp_path):
                     os.remove(temp_path)
 
+                # Delete map image
                 if os.path.exists("temp_map.png"):
                     os.remove("temp_map.png")
 
+                # Delete analysed document (uploaded_*.docx)
                 for file in os.listdir():
                     if file.startswith("uploaded_") and file.endswith(".docx"):
                         os.remove(file)
 
+                # Delete annexure files
+                for anx_file in ["anx_a.docx", "anx_b.docx", "anx_c.docx"]:
+                    if os.path.exists(anx_file):
+                        os.remove(anx_file)
+
+                # Delete temporary PNG files
                 for file in os.listdir():
                     if file.startswith("temp_") and file.endswith(".png"):
                         os.remove(file)
